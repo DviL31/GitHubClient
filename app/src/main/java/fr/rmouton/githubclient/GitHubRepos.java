@@ -3,17 +3,13 @@ package fr.rmouton.githubclient;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -65,6 +61,12 @@ public class GitHubRepos extends Activity {
         mAdaper = new ReposAdapter(this, android.R.layout.simple_list_item_1);
         mListView.setAdapter(mAdaper);
 
+        retrieveRepos();
+
+        super.onResume();
+    }
+
+    private void retrieveRepos() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://api.github.com")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -82,8 +84,6 @@ public class GitHubRepos extends Activity {
             public void failure(RetrofitError error) {
             }
         });
-
-        super.onResume();
     }
 
     public class ReposAdapter extends ArrayAdapter<Repo> {
