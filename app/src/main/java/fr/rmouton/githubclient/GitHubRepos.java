@@ -62,6 +62,12 @@ public class GitHubRepos extends Activity {
         mAdaper = new ReposAdapter(this, android.R.layout.simple_list_item_1);
         mListView.setAdapter(mAdaper);
 
+        retrieveRepos();
+
+        super.onResume();
+    }
+
+    private void retrieveRepos() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.github.com")
                 .addConverterFactory(GsonConverterFactory.create())
@@ -81,8 +87,6 @@ public class GitHubRepos extends Activity {
 
             }
         });
-
-        super.onResume();
     }
 
     public class ReposAdapter extends ArrayAdapter<Repo> {
