@@ -60,6 +60,12 @@ public class GitHubRepos extends Activity {
         mAdaper = new ReposAdapter(this, android.R.layout.simple_list_item_1);
         mListView.setAdapter(mAdaper);
 
+        retrieveRepos();
+
+        super.onResume();
+    }
+
+    private void retrieveRepos() {
         RestAdapter restAdapter = new RestAdapter.Builder()
                 .setEndpoint("https://api.github.com")
                 .setLogLevel(RestAdapter.LogLevel.FULL)
@@ -76,8 +82,6 @@ public class GitHubRepos extends Activity {
                         mAdaper.setData(repos);
                     }
                 });
-
-        super.onResume();
     }
 
     public class ReposAdapter extends ArrayAdapter<Repo> {
