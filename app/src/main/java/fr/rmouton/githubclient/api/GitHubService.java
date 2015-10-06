@@ -3,6 +3,7 @@ package fr.rmouton.githubclient.api;
 
 import java.util.List;
 
+import fr.rmouton.githubclient.api.models.Photo;
 import fr.rmouton.githubclient.api.models.Repo;
 import fr.rmouton.githubclient.api.models.RequestBody;
 import retrofit.Callback;
@@ -18,10 +19,12 @@ import retrofit.http.PUT;
 import retrofit.http.Part;
 import retrofit.http.Path;
 import retrofit.http.Query;
+import rx.Observable;
 
 /**
  * Created by dvil on 14/09/14.
  */
+@SuppressWarnings("unused")
 public interface GitHubService {
 
     @GET("/users/{user}/repos")
@@ -44,5 +47,8 @@ public interface GitHubService {
 
     @DELETE("/deleteIngredient")
     void delIngredient(@Query("recipe_id") int id, @Query("recipe_name") String name, @Query("time") long timestamp);
+
+    @GET("/user/{id}/photo")
+    Observable<Photo> getUserPhoto(@Path("id") int id);
 
 }
