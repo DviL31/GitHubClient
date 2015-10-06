@@ -3,26 +3,23 @@ package fr.rmouton.githubclient;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import fr.rmouton.githubclient.api.GitHubService;
 import fr.rmouton.githubclient.api.models.Repo;
+import retrofit.Call;
 import retrofit.Callback;
-import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import retrofit.GsonConverterFactory;
+import retrofit.Response;
+import retrofit.Retrofit;
 
 
 public class GitHubRepos extends Activity {
@@ -65,21 +62,23 @@ public class GitHubRepos extends Activity {
         mAdaper = new ReposAdapter(this, android.R.layout.simple_list_item_1);
         mListView.setAdapter(mAdaper);
 
-        RestAdapter restAdapter = new RestAdapter.Builder()
-                .setEndpoint("https://api.github.com")
-                .setLogLevel(RestAdapter.LogLevel.FULL)
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://api.github.com")
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        GitHubService service = restAdapter.create(GitHubService.class);
+        GitHubService service = retrofit.create(GitHubService.class);
 
-        service.listRepos(NAME, new Callback<List<Repo>>() {
+        Call<List<Repo>> call = service.listRepos(NAME);
+        call.enqueue(new Callback<List<Repo>>() {
             @Override
-            public void success(List<Repo> repo, Response response) {
-                mAdaper.setData(repo);
+            public void onResponse(Response<List<Repo>> response, Retrofit retrofit) {
+                mAdaper.setData(response.body());
             }
 
             @Override
-            public void failure(RetrofitError error) {
+            public void onFailure(Throwable t) {
+
             }
         });
 
