@@ -3,26 +3,21 @@ package fr.rmouton.githubclient;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
 import fr.rmouton.githubclient.api.GitHubService;
 import fr.rmouton.githubclient.api.models.Repo;
-import retrofit.Callback;
 import retrofit.RestAdapter;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 
 
 public class GitHubRepos extends Activity {
@@ -72,16 +67,15 @@ public class GitHubRepos extends Activity {
 
         GitHubService service = restAdapter.create(GitHubService.class);
 
-        service.listRepos(NAME, new Callback<List<Repo>>() {
-            @Override
-            public void success(List<Repo> repo, Response response) {
-                mAdaper.setData(repo);
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-            }
-        });
+        service.listRepos(NAME)
+                //.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<List<Repo>>() {
+                    @Override
+                    public void call(List<Repo> repos) {
+                        mAdaper.setData(repos);
+                    }
+                });
 
         super.onResume();
     }

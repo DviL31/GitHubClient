@@ -30,6 +30,9 @@ public interface GitHubService {
     @GET("/users/{user}/repos")
     void listRepos(@Path("user") String user, Callback<List<Repo>> r);
 
+    @GET("/users/{user}/repos")
+    Observable<List<Repo>> listRepos(@Path("user") String user);
+
     @Headers("Super-Power: true")
     @GET("/heaven/{door}?gender=male")
     void god(@Header("Authorization") String token,
